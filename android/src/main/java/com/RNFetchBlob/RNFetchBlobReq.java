@@ -190,14 +190,17 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
                     String key = it.nextKey();
                     req.addRequestHeader(key, headers.getString(key));
                 }
-                Context appCtx = RNFetchBlob.RCTContext.getApplicationContext();
-                DownloadManager dm = (DownloadManager) appCtx.getSystemService(Context.DOWNLOAD_SERVICE);
-                downloadManagerId = dm.enqueue(req);
-                androidDownloadManagerTaskTable.put(taskId, Long.valueOf(downloadManagerId));
-                appCtx.registerReceiver(this, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                try {
+                  Context appCtx = RNFetchBlob.RCTContext.getApplicationContext();
+                  DownloadManager dm = (DownloadManager) appCtx.getSystemService(Context.DOWNLOAD_SERVICE);
+                  downloadManagerId = dm.enqueue(req);
+                  androidDownloadManagerTaskTable.put(taskId, Long.valueOf(downloadManagerId));
+                  appCtx.registerReceiver(this, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                } catch (Exception e) {
+                  // prevent crash
+                }
                 return;
             }
-
         }
 
         // find cached result if `key` property exists

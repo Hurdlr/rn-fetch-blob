@@ -160,6 +160,7 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
             if (options.addAndroidDownloads.getBoolean("useDownloadManager")) {
                 Uri uri = Uri.parse(url);
                 DownloadManager.Request req = new DownloadManager.Request(uri);
+                // This key was added in one of the newer release however there are some libraries that still use the older version of the library
                 if(options.addAndroidDownloads.hasKey("notification") && options.addAndroidDownloads.getBoolean("notification")) {
                     req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 } else {
@@ -673,7 +674,7 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
                 }
 
                 String filePath = null;
-                try {    
+                try {
                     // the file exists in media content database
                     if (c.moveToFirst()) {
                         // #297 handle failed request

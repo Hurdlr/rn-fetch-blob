@@ -658,6 +658,7 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
         String action = intent.getAction();
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             Context appCtx = RNFetchBlob.RCTContext.getApplicationContext();
+            appCtx.unregisterReceiver(this);
             long id = intent.getExtras().getLong(DownloadManager.EXTRA_DOWNLOAD_ID);
             if (id == this.downloadManagerId) {
                 releaseTaskResource(); // remove task ID from task map

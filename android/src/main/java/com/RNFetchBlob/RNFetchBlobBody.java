@@ -239,8 +239,19 @@ class RNFetchBlobBody extends RequestBody{
                         is = ctx.getContentResolver().openInputStream(Uri.parse(contentURI));
                         pipeStreamToFileStream(is, os);
                     } catch(Exception e) {
-                        RNFetchBlobUtils.emitWarningEvent(
-                                "Failed to create form data from content URI:" + contentURI + ", " + e.getLocalizedMessage());
+                        try {
+                            if (!contentURI.contains("content://")) {
+                                contentURI = "content://" + contentURI;
+                                is = ctx.getContentResolver().openInputStream(Uri.parse(contentURI));
+                                pipeStreamToFileStream(is, os);
+                            } else {
+                                RNFetchBlobUtils.emitWarningEvent(
+                                        "Failed to create form data from content URI:" + contentURI + ", " + e.getLocalizedMessage());
+                            }
+                        } catch (Exception e1) {
+                            RNFetchBlobUtils.emitWarningEvent(
+                                    "Failed to create form data from content URI:" + contentURI + ", " + e1.getLocalizedMessage());
+                        }
                     } finally {
                         if (is != null) {
                             is.close();

@@ -108,8 +108,13 @@ public class RNFetchBlob extends ReactContextBaseJavaModule {
     @ReactMethod
     public void actionViewIntent(String path, String mime, final Promise promise) {
         try {
-            Uri uriForFile = FileProvider.getUriForFile(getCurrentActivity(),
-                    this.getReactApplicationContext().getPackageName() + ".provider", new File(path));
+            Uri uriForFile = null;
+            if (path.contains("content://")) {
+                uriForFile = Uri.parse(path);
+            } else {
+                uriForFile = FileProvider.getUriForFile(getCurrentActivity(),
+                        this.getReactApplicationContext().getPackageName() + ".provider", new File(path));
+            }
 
             if (Build.VERSION.SDK_INT >= 24) {
                 // Create the intent with data and type
@@ -118,7 +123,7 @@ public class RNFetchBlob extends ReactContextBaseJavaModule {
 
                 // Set flag to give temporary permission to external app to use FileProvider
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                 // All the activity to be opened outside of an activity
+                // All the activity to be opened outside of an activity
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 // All the activity to be opened outside of an activity

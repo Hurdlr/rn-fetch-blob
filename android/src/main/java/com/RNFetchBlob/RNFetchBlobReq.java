@@ -659,6 +659,7 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
             Context appCtx = RNFetchBlob.RCTContext.getApplicationContext();
             long id = intent.getExtras().getLong(DownloadManager.EXTRA_DOWNLOAD_ID);
             if (id == this.downloadManagerId) {
+                appCtx.unregisterReceiver(this);
                 releaseTaskResource(); // remove task ID from task map
 
                 DownloadManager.Query query = new DownloadManager.Query();
@@ -673,7 +674,7 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
                 }
 
                 String filePath = null;
-                try {    
+                try {
                     // the file exists in media content database
                     if (c.moveToFirst()) {
                         // #297 handle failed request
